@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de IQ Divertido</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #fff8f0, #fceabb);
+      color: #333;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      transition: background 0.5s;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #334;
+      margin-bottom: 10px;
+    }
+    .intro {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .intro img {
+      max-width: 120px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .question {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    .question p {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    .question img {
+      max-height: 150px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      background: #3366cc;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #254ba0;
+    }
+    #result {
+      display: none;
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #scoreText {
+      font-size: 1.3rem;
+      color: #334;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
+    #reviewAnswers {
+      text-align: left;
+      margin-top: 20px;
+    }
+    #reviewAnswers h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .answer-review {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f4f4f4;
+      border-radius: 8px;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+    #shareBtn {
+      margin-top: 20px;
+      background: #0077cc;
+    }
+    #shareBtn:hover {
+      background: #005fa3;
+    }
+    .gif {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>¡Test de IQ Divertido!</h1>
+  <div class="intro">
+    <img src="https://i.imgur.com/YQ0xieF.png" alt="cerebro divertido">
+    <p>Descubre cuán aguda está tu mente con este test rápido y entretenido. ¡Pon a prueba tu IQ de manera divertida!</p>
+  </div>
+  <div id="quiz"></div>
+  <div id="result">
+    <img class="gif" id="resultImage" src="" alt="Resultado visual">
+    <h2 id="scoreText"></h2>
+    <div id="reviewAnswers"></div>
+    <button id="shareBtn">Compartir resultado</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        q: "Si algunas rosas son flores y todas las flores se marchitan, ¿qué pasa con las rosas?",
+        options: ["Todas las rosas se marchitan", "Ninguna rosa se marchita", "Solo algunas se marchitan", "No se puede saber"],
+        correct: 0
+      },
+      {
+        q: "Pedro tiene tres hermanas y cada hermana tiene un hermano. ¿Cuántos hijos tiene la madre?",
+        options: ["4", "3", "5", "6"],
+        correct: 0
+      },
+      {
+        q: "Un lirio se duplica cada día. En 20 días cubre todo el estanque. ¿Cuánto tarda en cubrir la mitad?",
+        options: ["19 días", "10 días", "5 días", "15 días"],
+        correct: 0
+      },
+      {
+        q: "Completa la serie: 2, 4, 8, 16, ?",
+        options: ["24", "30", "32", "64"],
+        correct: 2
+      },
+      {
+        q: "¿Qué número falta? 1, 1, 2, 3, 5, ?, 13",
+        options: ["6", "7", "8", "9"],
+        correct: 2
+      },
+      {
+        q: "Un tren eléctrico va al norte a 100km/h y el viento sopla al oeste a 50km/h. ¿Hacia dónde va el humo?",
+        options: ["Norte", "Sur", "No hay humo", "Oeste"],
+        correct: 2
+      },
+      {
+        q: "Si hoy es lunes, ¿qué día será en 100 días?",
+        options: ["Martes", "Jueves", "Viernes", "Miércoles"],
+        correct: 3
+      },
+      {
+        q: "Un hombre construye una casa con paredes al sur. Un oso pasa por allí. ¿De qué color es?",
+        options: ["Marrón", "Blanco", "Negro", "Gris"],
+        correct: 1
+      },
+      {
+        q: "¿Cuántas veces puedes restar 5 de 25?",
+        options: ["1 vez", "5 veces", "25 veces", "Infinitas veces"],
+        correct: 0
+      },
+      {
+        q: "Tienes 10 bolas rojas, 10 azules y 10 verdes. ¿Cuántas debes sacar para tener al menos 2 del mismo color?",
+        options: ["4", "3", "2", "10"],
+        correct: 0
+      }
+    ];
+
+    const questionImages = [
+      "https://i.imgur.com/G0yUYOQ.png",
+      "https://i.imgur.com/VrhO7C5.png",
+      "https://i.imgur.com/ZgjAz6F.png",
+      "https://i.imgur.com/9XsTCTF.png",
+      "https://i.imgur.com/y38OBHy.png",
+      "https://i.imgur.com/HjPX2xG.png",
+      "https://i.imgur.com/SmQlJrw.png",
+      "https://i.imgur.com/2c0y7Xn.png",
+      "https://i.imgur.com/OmcVpHz.png",
+      "https://i.imgur.com/tl2z5DU.png"
+    ];
+
+    const questionColors = [
+      "#fdf6e3", "#fff9f0", "#e9f5ff", "#f0fff4", "#fff0f0", "#f3f3f3", "#e0f7fa", "#f8e1ff", "#e8f0fe", "#f4f1bb"
+    ];
+
+    let current = 0;
+    let score = 0;
+    const userAnswers = [];
+
+    const quizDiv = document.getElementById("quiz");
+    const resultDiv = document.getElementById("result");
+    const scoreText = document.getElementById("scoreText");
+    const shareBtn = document.getElementById("shareBtn");
+    const resultImage = document.getElementById("resultImage");
+    const reviewAnswers = document.getElementById("reviewAnswers");
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        const iq = 80 + Math.round((score / questions.length) * 60);
+        let label = "";
+        let img = "";
+
+        if (iq >= 130) {
+          label = "¡Superdotado! Tu IQ es impresionante.";
+          img = "https://media.giphy.com/media/xT0GqeSlGSRQutAo4w/giphy.gif";
+        } else if (iq >= 110) {
+          label = "Muy inteligente, tienes una gran mente.";
+          img = "https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif";
+        } else if (iq >= 90) {
+          label = "Normal, buen trabajo pero podrías mejorar.";
+          img = "https://media.giphy.com/media/3o6ZsZknWqPhX4n7Dy/giphy.gif";
+        } else {
+          label = "Hora de ejercitar ese cerebro.";
+          img = "https://media.giphy.com/media/3oEduW1BhGKxJvxj0g/giphy.gif";
+        }
+
+        scoreText.innerText = `Tu IQ estimado: ${iq}\n${label}`;
+        resultImage.src = img;
+
+        let reviewHTML = '<h3>Revisión de tus respuestas:</h3>';
+        questions.forEach((q, i) => {
+          const userAns = userAnswers[i];
+          const correctAns = q.correct;
+          const isCorrect = userAns === correctAns;
+          reviewHTML += `
+            <div class="answer-review">
+              <strong>Pregunta ${i + 1}:</strong> ${q.q}<br>
+              Tu respuesta: <span class="${isCorrect ? 'correct' : 'incorrect'}">${q.options[userAns] || 'Sin responder'}</span><br>
+              Respuesta correcta: <span class="correct">${q.options[correctAns]}</span>
+            </div>
+          `;
+        });
+        reviewAnswers.innerHTML = reviewHTML;
+
+        quizDiv.style.display = "none";
+        resultDiv.style.display = "block";
+        return;
+      }
+
+      document.body.style.background = questionColors[current];
+      const q = questions[current];
+      let optionsHtml = "";
+      q.options.forEach((opt, idx) => {
+        optionsHtml += `<button onclick="answer(${idx})">${opt}</button>`;
+      });
+
+      quizDiv.innerHTML = `
+        <div class="question">
+          <img src="${questionImages[current]}" alt="Pregunta">
+          <p>${q.q}</p>
+          ${optionsHtml}
+        </div>
+      `;
+    }
+
+    function answer(selected) {
+      userAnswers.push(selected);
+      if (selected === questions[current].correct) score++;
+      current++;
+      showQuestion();
+    }
+
+    shareBtn.onclick = () => {
+      const text = encodeURIComponent(scoreText.innerText);
+      const url = encodeURIComponent(window.location.href);
+      const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+      window.open(shareUrl, '_blank');
+    };
+
+    showQuestion();
+  </script>
+</body>
+</html>
